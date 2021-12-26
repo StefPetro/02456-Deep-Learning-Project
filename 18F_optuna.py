@@ -26,8 +26,8 @@ def fix_all_seeds(seed):
 
 fix_all_seeds(42)
 
-meta = pd.read_csv('Project/4000_PCS_human_origins/v44.3_HO_public.anno', sep='\t')
-pcs = pd.read_csv('Project/4000_PCS_human_origins/pcs.txt', sep='\t')
+meta = pd.read_csv('data/v44.3_HO_public.anno', sep='\t')
+pcs = pd.read_csv('data/pcs.txt', sep='\t')
 
 INPUT_SIZE = 2
 BATCH_SIZE = 64
@@ -53,7 +53,7 @@ def objective(trial):
     print(f'Begin trial {trial.number}')
     # wandb_logger = WandbLogger(project='02456DeepLearning_project', name=f'input-{INPUT_SIZE}-{trial.number}')
     trainer = pl.Trainer(
-        logger=TensorBoardLogger(save_dir='Project/lightning_logs', name=f'input_size_{INPUT_SIZE}-layer-4', version=trial.number),
+        logger=TensorBoardLogger(save_dir='lightning_logs', name=f'input_size_{INPUT_SIZE}-layer-4', version=trial.number),
         max_epochs=100,
         # log_every_n_steps=5,
         callbacks=[PyTorchLightningPruningCallback(trial, monitor='val/acc')],
@@ -76,14 +76,11 @@ def objective(trial):
     return trainer.callback_metrics['val/acc'].item()
 
 
-wandb_kwargs = {"project": "02456DeepLearning_project", 'name': f'input-size-{INPUT_SIZE}-layer-4'}
-wandbcb = WeightsAndBiasesCallback(metric_name='val/acc', wandb_kwargs=wandb_kwargs)
-
 print('Finding optimal hyperparameters using Optuna...')
 pruner = optuna.pruners.MedianPruner(n_startup_trials=5)
 
 study = optuna.create_study(direction='maximize', pruner=pruner)
-study.optimize(objective, n_trials=50, callbacks=[wandbcb])
+study.optimize(objective, n_trials=50)
     
 print('Best trial:')
 trial = study.best_trial
@@ -94,5 +91,5 @@ for key, value in trial.params.items():
     print(f'\t \t {key}: {value}')
 
 
-with open(f'project/best_hyperparameters/input_{INPUT_SIZE}.yaml', 'w') as outfile:
+with open(f'best_hyperparameters/input_{INPUT_SIZE}.yaml', 'w') as outfile:
     yaml.dump(trial.params, outfile, default_flow_style=False)

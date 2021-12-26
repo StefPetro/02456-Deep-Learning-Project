@@ -23,8 +23,8 @@ fix_all_seeds(42)
 INPUT_SIZE = 20
 batch_size = 64
 
-meta = pd.read_csv('4000_PCS_human_origins/v44.3_HO_public.anno', sep='\t')
-pcs = pd.read_csv('4000_PCS_human_origins/pcs.txt', sep='\t')
+meta = pd.read_csv('data/v44.3_HO_public.anno', sep='\t')
+pcs = pd.read_csv('data/pcs.txt', sep='\t')
 
 x, y, idx_to_region = prepare_data(pcs, meta, num_of_pcs=INPUT_SIZE, ancient_samples=True)
 _, _, test_loader = create_dataloaders(x, y, batch_size=batch_size, train_shuffle=True)

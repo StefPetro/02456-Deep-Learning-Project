@@ -8,7 +8,7 @@ from torchmetrics.functional import accuracy
 class ffnn(pl.LightningModule):
     def __init__(self, input_size: int=100, layer_1: int=2000, layer_2: int=1500, layer_3: int=1000, layer_4: int=500,
                  dropout: float=0.25,
-                 lr: float=1.5e-4, weight_decay: float=1e-5):
+                 lr: float=1.5e-4, weight_decay: float=1e-4):
         super().__init__()
         
         self.lr = lr

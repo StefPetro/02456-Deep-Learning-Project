@@ -28,15 +28,15 @@ def fix_all_seeds(seed):
 fix_all_seeds(42)
 
 
-meta = pd.read_csv('Project/4000_PCS_human_origins/v44.3_HO_public.anno', sep='\t')
-pcs = pd.read_csv('Project/4000_PCS_human_origins/pcs.txt', sep='\t')
+meta = pd.read_csv('data/v44.3_HO_public.anno', sep='\t')
+pcs = pd.read_csv('data/pcs.txt', sep='\t')
 
 
 INPUT_SIZE = 100
 BATCH_SIZE = 64
 
 # Load hyperparamters
-filename = f'Project/best_hyperparameters/input_{INPUT_SIZE}.yaml'  # f'Project/best_hyperparameters/standard.yaml'  
+filename = f'best_hyperparameters/input_{INPUT_SIZE}.yaml'  # f'Project/best_hyperparameters/standard.yaml'  
 with open(filename, "r") as stream:
     hyperparameters = yaml.safe_load(stream)
 
@@ -56,7 +56,7 @@ wandb_logger = WandbLogger(project='02456DeepLearning_project', name=f'input-{IN
 
 checkpoint_callback = ModelCheckpoint(
         monitor='val/acc',
-        dirpath=f'Project/checkpoints/input_{INPUT_SIZE}',
+        dirpath=f'checkpoints/input_{INPUT_SIZE}',
         filename='no_ancient_{epoch:02d}_{val_acc:.2f}',
         mode='max',
         )
